@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
+import 'package:flutter_application_salaoapp/models/agendamento_model.dart'; // Importar o modelo de agendamento
+import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart'; // Importar a página de agendamentos do cliente
+import 'package:uuid/uuid.dart'; // Para gerar IDs únicos
 
 class AgendamentoPage extends StatefulWidget {
   final ServicoModel servico;
@@ -13,6 +16,7 @@ class AgendamentoPage extends StatefulWidget {
 class _AgendamentoPageState extends State<AgendamentoPage> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  final Uuid uuid = Uuid(); // Instância para gerar UUIDs
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -37,6 +41,41 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
       setState(() {
         _selectedTime = picked;
       });
+    }
+  }
+
+  void _confirmarAgendamento() {
+    if (_selectedDate != null && _selectedTime != null) {
+      final newAgendamento = AgendamentoModel(
+        id: uuid.v4(), // Gera um ID único para o agendamento
+        servico: widget.servico,
+        data: _selectedDate!,
+        hora: _selectedTime!.format(context),
+      );
+
+      // Adiciona o novo agendamento à lista global
+      agendamentosGlobais.add(newAgendamento);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Agendamento de ${widget.servico.name} para ${(_selectedDate!).day}/${(_selectedDate!).month}/${(_selectedDate!).year} às ${(_selectedTime!).format(context)} confirmado!',
+          ),
+        ),
+      );
+      // Navega para a tela de agendamentos do cliente
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AgendamentosClientePage(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, selecione a data e a hora.'),
+        ),
+      );
     }
   }
 
@@ -84,25 +123,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  if (_selectedDate != null && _selectedTime != null) {
-                    // Lógica para confirmar o agendamento
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Agendamento de ${widget.servico.name} para ${(_selectedDate!).day}/${(_selectedDate!).month}/${(_selectedDate!).year} às ${(_selectedTime!).format(context)} confirmado!',
-                        ),
-                      ),
-                    );
-                    Navigator.pop(context); // Volta para a tela anterior
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Por favor, selecione a data e a hora.'),
-                      ),
-                    );
-                  }
-                },
+                onPressed: _confirmarAgendamento,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pinkAccent,
                   foregroundColor: Colors.white,

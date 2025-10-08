@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
-import 'package:flutter_application_salaoapp/pages/agendamento_page.dart'; // Importar a nova página
+import 'package:flutter_application_salaoapp/pages/agendamento_page.dart';
+import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart'; // Importar a página de agendamentos do cliente
 
 class ServicoTela extends StatefulWidget {
   const ServicoTela({Key? key}) : super(key: key);
@@ -57,8 +58,14 @@ class _ServicoTelaState extends State<ServicoTela> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nossos Serviços'),
-        backgroundColor: Colors.pink[100], // Cor suave para salão
+        title: Text('Nossos Serviços'),
+        backgroundColor: const Color.fromARGB(255, 233, 116, 157), // Cor suave para salão
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(32),
+            ),
+          ),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -87,7 +94,7 @@ class _ServicoTelaState extends State<ServicoTela> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Container(
                           height: 180,
-                          color: Colors.grey[300],
+                          color: const Color.fromARGB(255, 224, 224, 224),
                           child: const Center(child: Icon(Icons.broken_image, size: 50, color: Colors.grey)),
                         ),
                       ),
@@ -149,6 +156,19 @@ class _ServicoTelaState extends State<ServicoTela> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AgendamentosClientePage(),
+            ),
+          );
+        },
+        backgroundColor: Colors.pinkAccent,
+        child: const Icon(Icons.list, color: Colors.white),
+        tooltip: 'Ver Meus Agendamentos',
       ),
     );
   }

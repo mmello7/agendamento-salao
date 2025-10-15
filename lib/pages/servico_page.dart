@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_salaoapp/_comum/Minhas_cores.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
 import 'package:flutter_application_salaoapp/pages/agendamento_page.dart';
 import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart'; // Importar a página de agendamentos do cliente
@@ -59,7 +60,7 @@ class _ServicoTelaState extends State<ServicoTela> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nossos Serviços'),
-        backgroundColor: const Color.fromARGB(255, 233, 116, 157), // Cor suave para salão
+        backgroundColor: MinhasCores.rosaClaro, // Cor suave para salão
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(

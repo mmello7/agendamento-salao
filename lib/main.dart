@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_salaoapp/pages/autenticacao_page.dart';
 import 'package:flutter_application_salaoapp/pages/servico_page.dart';
 
 void main() {
@@ -10,13 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       title: 'Salão App',
       theme: ThemeData(
         primarySwatch: Colors.pink,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ServicoTela(), // Define ServicoTela como a página inicial
+      home: AutenticacaoTela(), // Define ServicoTela como a página inicial
     );
   }
 }

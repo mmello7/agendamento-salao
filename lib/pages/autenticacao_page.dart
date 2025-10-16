@@ -13,6 +13,10 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
   bool queroEntrar = true;
   final _formkey = GlobalKey<FormState>();
 
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _senhaController = TextEditingController();
+  TextEditingController _nomeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +51,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
+                    controller: _emailController,
                     decoration: getAuthenticationInputDecoration("E-mail"),
                     validator: (String? value) {
                       if (value == null) {
@@ -63,6 +68,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+                    controller: _senhaController,
                     decoration: getAuthenticationInputDecoration("Senha"),
                     obscureText: true,
                     validator: (String? value) {
@@ -97,6 +103,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                         ),
                         const SizedBox(height: 8),
                         TextFormField(
+                          controller: _nomeController,
                           decoration: getAuthenticationInputDecoration("Nome"),
                           validator: (String? value) {
                             if (value == null) {
@@ -143,7 +150,13 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
 
   botaoPrincipalClicado() {
     if(_formkey.currentState!.validate()){
-      print("Form Válido");
+      if(queroEntrar){
+        print("Entrada Válida");
+      }else{
+        print("Cadastro Válido");
+        print(
+          "${_emailController.text}, ${_senhaController.text}, ${_nomeController.text} ");
+      }
       } else {
       print("Form Inválido");
       }

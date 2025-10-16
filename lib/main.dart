@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/pages/autenticacao_page.dart';
-import 'package:flutter_application_salaoapp/pages/servico_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -9,8 +8,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
-runApp(const MyApp());
   runApp(const MyApp());
+ 
 }
 
 class MyApp extends StatelessWidget {

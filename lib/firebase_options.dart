@@ -41,30 +41,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCGdI9RfeRxvhOC0d9OX_L5Dh4DI_imti8',
-    appId: '1:327904379243:web:31b8cfe8175f15c79d8c2e',
-    messagingSenderId: '327904379243',
-    projectId: 'flutter-salaoapp',
-    authDomain: 'flutter-salaoapp.firebaseapp.com',
-    storageBucket: 'flutter-salaoapp.firebasestorage.app',
-    measurementId: 'G-47KBGNQZPS',
+    apiKey: 'AIzaSyCq6BVO4C-oG9ldnvWF9YU0zNTQr4Q6XC0',
+    appId: '1:932815662693:web:726145dc8ef9b4bce5e08c',
+    messagingSenderId: '932815662693',
+    projectId: 'novosalaoapp',
+    authDomain: 'novosalaoapp.firebaseapp.com',
+    storageBucket: 'novosalaoapp.firebasestorage.app',
+    measurementId: 'G-3T1YDJ2DER',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAqK5Vh7-_AsZCHsv4-_DKegV_Y8uz3viM',
-    appId: '1:327904379243:android:6ca809b59749ec879d8c2e',
-    messagingSenderId: '327904379243',
-    projectId: 'flutter-salaoapp',
-    storageBucket: 'flutter-salaoapp.firebasestorage.app',
+    apiKey: 'AIzaSyBjuiD4iqzcrlacX33YX0s1HVmanWHk0Co',
+    appId: '1:932815662693:android:599605c11eb9dbe5e5e08c',
+    messagingSenderId: '932815662693',
+    projectId: 'novosalaoapp',
+    storageBucket: 'novosalaoapp.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBRnpGt0PYq7ukd5mIQ_yPm-Q9FstcLPlk',
-    appId: '1:327904379243:ios:9d556b9e08c045679d8c2e',
-    messagingSenderId: '327904379243',
-    projectId: 'flutter-salaoapp',
-    storageBucket: 'flutter-salaoapp.firebasestorage.app',
-    iosBundleId: 'com.example.flutterApplicationSalaoapp',
+    apiKey: 'AIzaSyBYbHy5V_nfbMTlRYPXPJNnTNi8Y_J6R0c',
+    appId: '1:932815662693:ios:b370bfa4746eab6de5e08c',
+    messagingSenderId: '932815662693',
+    projectId: 'novosalaoapp',
+    storageBucket: 'novosalaoapp.firebasestorage.app',
+    iosBundleId: 'com.example.novoSalaoapp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

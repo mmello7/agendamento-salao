@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/_comum/minhas_cores.dart';
 import 'package:flutter_application_salaoapp/componentes/decoration_campo_autenticacao.dart';
+<<<<<<< HEAD
 import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart';
+=======
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
 
 class AutenticacaoTela extends StatefulWidget {
   const AutenticacaoTela({super.key});
@@ -14,12 +17,15 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
   bool queroEntrar = true;
   final _formkey = GlobalKey<FormState>();
 
+<<<<<<< HEAD
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
 
   AutenticacaoServico _autenServico = AutenticacaoServico();
 
+=======
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +60,10 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
+<<<<<<< HEAD
                     controller: _emailController,
+=======
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
                     decoration: getAuthenticationInputDecoration("E-mail"),
                     validator: (String? value) {
                       if (value == null) {
@@ -71,6 +80,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+<<<<<<< HEAD
                     controller: _senhaController,
                     decoration: getAuthenticationInputDecoration("Senha"),
                     obscureText: true,
@@ -83,6 +93,19 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                       }
                       return null;
                     },
+=======
+                    decoration: getAuthenticationInputDecoration("Senha"),
+                    obscureText: true,
+                    validator: (String? value) {
+                        if (value == null) {
+                            return "Senha é obrigatória";
+                         }
+                        if (value.length < 5) {
+                            return "Senha muito curta";
+                        }
+                        return null;
+                        },
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
                   ),
                   const SizedBox(height: 8),
                   Visibility(
@@ -98,6 +121,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                             if (value == null) {
                               return "A confirmação de Senha não pode ser vazia";
                             }
+<<<<<<< HEAD
                             if (value.length < 5) {
                               return "Senha muito curta";
                             }
@@ -107,6 +131,16 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _nomeController,
+=======
+                              if (value.length < 5) {
+                                return "Senha muito curta";
+                              }
+                              return null;
+                            },
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
                           decoration: getAuthenticationInputDecoration("Nome"),
                           validator: (String? value) {
                             if (value == null) {
@@ -152,6 +186,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
   }
 
   botaoPrincipalClicado() {
+<<<<<<< HEAD
     String nome = _nomeController.text;
     String email = _emailController.text;
     String senha = _senhaController.text;
@@ -171,3 +206,13 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
     }
   }
 }
+=======
+    if(_formkey.currentState!.validate()){
+      print("Form Válido");
+      } else {
+      print("Form Inválido");
+      }
+    }
+}
+
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5

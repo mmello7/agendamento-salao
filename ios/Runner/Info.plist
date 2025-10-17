@@ -5,7 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
+<<<<<<< HEAD
 	<string>Novo Salaoapp</string>
+=======
+	<string>Flutter Application Salaoapp</string>
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +17,11 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
+<<<<<<< HEAD
 	<string>novo_salaoapp</string>
+=======
+	<string>flutter_application_salaoapp</string>
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

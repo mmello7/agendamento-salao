@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # novo_salaoapp
+=======
+# flutter_application_salaoapp
+>>>>>>> 54117a2efa8f8929603d7cbd1cd98d92464f7ba5
 
 A new Flutter project.
 

@@ -160,6 +160,13 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
     if (_formkey.currentState!.validate()) {
       if (queroEntrar) {
         print("Entrada Válida");
+        _autenServico.logarUsuario(email: email, senha: senha).then(
+          (String? erro) {
+          if (erro != null) {
+            mostrarSnackBar(context: context, texto: erro);
+            }
+          },
+        );
       } else {
         print("Cadastro Válido");
         print(

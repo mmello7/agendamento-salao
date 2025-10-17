@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/_comum/minhas_cores.dart';
 import 'package:flutter_application_salaoapp/componentes/decoration_campo_autenticacao.dart';
+import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart';
 
 class AutenticacaoTela extends StatefulWidget {
   const AutenticacaoTela({super.key});
@@ -13,9 +14,11 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
   bool queroEntrar = true;
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _senhaController = TextEditingController();
-  TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+
+  AutenticacaoServico _autenServico = AutenticacaoServico();
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +75,14 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                     decoration: getAuthenticationInputDecoration("Senha"),
                     obscureText: true,
                     validator: (String? value) {
-                        if (value == null) {
-                            return "Senha é obrigatória";
-                         }
-                        if (value.length < 5) {
-                            return "Senha muito curta";
-                        }
-                        return null;
-                        },
+                      if (value == null) {
+                        return "Senha é obrigatória";
+                      }
+                      if (value.length < 5) {
+                        return "Senha muito curta";
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 8),
                   Visibility(
@@ -95,11 +98,11 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                             if (value == null) {
                               return "A confirmação de Senha não pode ser vazia";
                             }
-                              if (value.length < 5) {
-                                return "Senha muito curta";
-                              }
-                              return null;
-                            },
+                            if (value.length < 5) {
+                              return "Senha muito curta";
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 8),
                         TextFormField(
@@ -149,17 +152,22 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
   }
 
   botaoPrincipalClicado() {
-    if(_formkey.currentState!.validate()){
-      if(queroEntrar){
+    String nome = _nomeController.text;
+    String email = _emailController.text;
+    String senha = _senhaController.text;
+
+    if (_formkey.currentState!.validate()) {
+      if (queroEntrar) {
         print("Entrada Válida");
-      }else{
+      } else {
         print("Cadastro Válido");
         print(
-          "${_emailController.text}, ${_senhaController.text}, ${_nomeController.text} ");
+          "${_emailController.text}, ${_senhaController.text}, ${_nomeController.text} ",
+        );
+        _autenServico.cadastrarUsuario(nome: nome, senha: senha, email: email);
       }
-      } else {
+    } else {
       print("Form Inválido");
-      }
     }
+  }
 }
-

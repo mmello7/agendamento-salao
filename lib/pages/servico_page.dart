@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/_comum/Minhas_cores.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
 import 'package:flutter_application_salaoapp/pages/agendamento_page.dart';
-import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart'; // Importar a página de agendamentos do cliente
+import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart';
+import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart'; // Importar a página de agendamentos do cliente
 
 class ServicoTela extends StatefulWidget {
   const ServicoTela({Key? key}) : super(key: key);
@@ -19,40 +20,45 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Corte',
       descricao: 'Corte moderno e personalizado para realçar sua beleza.',
       avaliacao: '4.8',
-      urlImage: 'https://images.unsplash.com/photo-1595476108010-b49e8275ccf8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-     ),
+      urlImage:
+          'https://images.unsplash.com/photo-1595476108010-b49e8275ccf8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ),
     ServicoModel(
       id: '2',
       name: 'Corte de Cabelo Masculino',
       servico: 'Corte',
       descricao: 'Estilo e precisão para o seu visual.',
       avaliacao: '4.7',
-      urlImage: 'https://images.unsplash.com/photo-1621607509154-bf6285e7593e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-     ),
+      urlImage:
+          'https://images.unsplash.com/photo-1621607509154-bf6285e7593e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ),
     ServicoModel(
       id: '3',
       name: 'Coloração Completa',
       servico: 'Coloração',
       descricao: 'Transforme seu cabelo com cores vibrantes e duradouras.',
       avaliacao: '4.9',
-      urlImage: 'https://images.unsplash.com/photo-1521602736140-192534641977?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-     ),
+      urlImage:
+          'https://images.unsplash.com/photo-1521602736140-192534641977?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ),
     ServicoModel(
       id: '4',
       name: 'Manicure e Pedicure',
       servico: 'Unhas',
       descricao: 'Unhas impecáveis e bem cuidadas para todas as ocasiões.',
       avaliacao: '4.6',
-      urlImage: 'https://images.unsplash.com/photo-1583947041727-eb424885066c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-     ),
+      urlImage:
+          'https://images.unsplash.com/photo-1583947041727-eb424885066c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ),
     ServicoModel(
       id: '5',
       name: 'Tratamento Capilar',
       servico: 'Tratamento',
       descricao: 'Hidratação profunda e restauração para cabelos saudáveis.',
       avaliacao: '4.9',
-      urlImage: 'https://images.unsplash.com/photo-1521590832167-9ee28dcdad93?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-     ),
+      urlImage:
+          'https://images.unsplash.com/photo-1521590832167-9ee28dcdad93?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ),
   ];
 
   @override
@@ -63,11 +69,22 @@ class _ServicoTelaState extends State<ServicoTela> {
         backgroundColor: MinhasCores.rosaClaro, // Cor suave para salão
         elevation: 0,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(32),
-            ),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
+        ),
         centerTitle: true,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text("Deslogar"),
+              onTap: () {
+                AutenticacaoServico().deslogar();
+              },
+            ),
+          ],
+        ),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16.0),
@@ -96,7 +113,13 @@ class _ServicoTelaState extends State<ServicoTela> {
                         errorBuilder: (context, error, stackTrace) => Container(
                           height: 180,
                           color: const Color.fromARGB(255, 224, 224, 224),
-                          child: const Center(child: Icon(Icons.broken_image, size: 50, color: Colors.grey)),
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -112,10 +135,7 @@ class _ServicoTelaState extends State<ServicoTela> {
                   const SizedBox(height: 8),
                   Text(
                     servico.descricao,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[700],
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -135,7 +155,8 @@ class _ServicoTelaState extends State<ServicoTela> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AgendamentoPage(servico: servico),
+                              builder: (context) =>
+                                  AgendamentoPage(servico: servico),
                             ),
                           );
                         },
@@ -147,7 +168,10 @@ class _ServicoTelaState extends State<ServicoTela> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
                         ),
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/_comum/minhas_cores.dart';
+import 'package:flutter_application_salaoapp/_comum/snackbar.dart';
 import 'package:flutter_application_salaoapp/componentes/decoration_campo_autenticacao.dart';
 import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart';
 
@@ -164,7 +165,19 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
         print(
           "${_emailController.text}, ${_senhaController.text}, ${_nomeController.text} ",
         );
-        _autenServico.cadastrarUsuario(nome: nome, senha: senha, email: email);
+        _autenServico
+            .cadastrarUsuario(nome: nome, senha: senha, email: email)
+            .then((String? erro) {
+              if (erro != null) {
+                mostrarSnackBar(context: context, texto: erro);
+              } else {
+                mostrarSnackBar(
+                  context: context,
+                  texto: "Cadastro efetuado com Sucesso",
+                  isErro: false,
+                );
+              }
+            });
       }
     } else {
       print("Form Inválido");

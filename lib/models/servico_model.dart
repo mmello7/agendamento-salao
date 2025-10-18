@@ -13,7 +13,7 @@ class ServicoModel {
     required this.servico,
     required this.descricao,
     required this.avaliacao,
-    this.urlImage,
+    this.urlImage, required double price,
   });
 
   ServicoModel.fromMap(Map<String, dynamic> map)
@@ -23,6 +23,8 @@ class ServicoModel {
       descricao = map['descricao'],
       avaliacao = map['avaliacao'],
       urlImage = map['urlImage'];
+
+  get price => null;
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
+import 'package:flutter_application_salaoapp/servicos/agendamento_servico.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importar FirebaseAuth para obter o usuário atual
 import 'package:flutter_application_salaoapp/models/agendamento_model.dart'; // Importar o modelo de agendamento
 import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart'; // Importar a página de agendamentos do cliente
-import 'package:uuid/uuid.dart'; // Para gerar IDs únicos
+
 
 class AgendamentoPage extends StatefulWidget {
-  final ServicoModel servico;
+  final List<ServicoModel> servicosSelecionados; // Alterado para lista de serviços
 
-  const AgendamentoPage({Key? key, required this.servico}) : super(key: key);
+  const AgendamentoPage({Key? key, required this.servicosSelecionados}): super(key: key);
 
   @override
   State<AgendamentoPage> createState() => _AgendamentoPageState();
@@ -16,7 +18,15 @@ class AgendamentoPage extends StatefulWidget {
 class _AgendamentoPageState extends State<AgendamentoPage> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  final Uuid uuid = Uuid(); // Instância para gerar UUIDs
+  late final AgendamentoServico _agendamentoServico;
+  late final FirebaseAuth _auth;
+
+  @override
+  void initState() {
+    super.initState();
+    _agendamentoServico = AgendamentoServico();
+    _auth = FirebaseAuth.instance;
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -44,25 +54,59 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
     }
   }
 
-  void _confirmarAgendamento() {
+  void _confirmarAgendamento() async { // Alterado para async
     if (_selectedDate != null && _selectedTime != null) {
-      final newAgendamento = AgendamentoModel(
-        id: uuid.v4(), // Gera um ID único para o agendamento
-        servico: widget.servico,
-        data: _selectedDate!,
-        hora: _selectedTime!.format(context),
-      );
-
-      // Adiciona o novo agendamento à lista global
-      agendamentosGlobais.add(newAgendamento);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Agendamento de ${widget.servico.name} para ${(_selectedDate!).day}/${(_selectedDate!).month}/${(_selectedDate!).year} às ${(_selectedTime!).format(context)} confirmado!',
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erro: Usuário não autenticado.'),
           ),
-        ),
+        );
+        return;
+      }
+
+      final DateTime agendamentoDateTime = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
       );
+
+      final List<Map<String, dynamic>> servicosData = widget.servicosSelecionados.map((s) => {
+        'id': s.id,
+        'nome': s.name,
+        'preco': s.price,
+      }).toList();
+
+      final Agendamento newAgendamento = Agendamento(
+        userId: user.uid,
+        userName: user.displayName ?? "Usuário", // Usa o nome do usuário ou "Usuário"
+        dataHora: agendamentoDateTime,
+        servicos: servicosData,
+        profissional: "A definir", // Pode ser selecionado em outra tela ou definido por padrão
+        status: "pendente",
+        criadoEm: DateTime.now(),
+      );
+
+      String? erro = await _agendamentoServico.criarAgendamento(newAgendamento);
+
+      if (erro == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Agendamento de ${widget.servicosSelecionados.map((s) => s.name).join(', ')} para ${(_selectedDate!).day}/${(_selectedDate!).month}/${(_selectedDate!).year} às ${(_selectedTime!).format(context)} confirmado!',
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao agendar: $erro'),
+          ),
+        );
+      }
       // Navega para a tela de agendamentos do cliente
       Navigator.pushReplacement(
         context,
@@ -83,7 +127,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agendar ${widget.servico.name}'),
+        title: Text('Agendar Serviços'), // Título genérico para múltiplos serviços
         backgroundColor: Colors.pink[100],
         centerTitle: true,
       ),
@@ -93,12 +137,12 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Serviço: ${widget.servico.name}',
+              'Serviços Selecionados: ${widget.servicosSelecionados.map((s) => s.name).join(', ')}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Text(
-              'Descrição: ${widget.servico.descricao}',
+              'Total de Serviços: ${widget.servicosSelecionados.length}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),

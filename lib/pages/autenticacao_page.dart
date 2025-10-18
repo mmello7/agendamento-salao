@@ -177,13 +177,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
             .then((String? erro) {
               if (erro != null) {
                 mostrarSnackBar(context: context, texto: erro);
-              } else {
-                mostrarSnackBar(
-                  context: context,
-                  texto: "Cadastro efetuado com Sucesso",
-                  isErro: false,
-                );
-              }
+              } 
             });
       }
     } else {

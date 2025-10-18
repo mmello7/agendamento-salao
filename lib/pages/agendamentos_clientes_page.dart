@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/models/agendamento_model.dart';
-
-// Lista global (simulada) para armazenar os agendamentos
-// Em um aplicativo real, isso viria de um banco de dados ou API
-List<AgendamentoModel> agendamentosGlobais = [];
+import 'package:flutter_application_salaoapp/servicos/agendamento_servico.dart';
+import 'package:flutter_application_salaoapp/pages/editar_agendamento_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AgendamentosClientePage extends StatefulWidget {
   const AgendamentosClientePage({Key? key}) : super(key: key);
@@ -13,23 +12,20 @@ class AgendamentosClientePage extends StatefulWidget {
 }
 
 class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
-  // Usaremos uma cópia local da lista global para que as alterações de estado sejam refletidas
-  List<AgendamentoModel> _agendamentos = [];
+  final AgendamentoServico _agendamentoServico = AgendamentoServico();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  @override
-  void initState() {
-    super.initState();
-    _agendamentos = List.from(agendamentosGlobais); // Inicializa com os agendamentos globais
-  }
-
-  void _excluirAgendamento(String id) {
-    setState(() {
-      _agendamentos.removeWhere((agendamento) => agendamento.id == id);
-      agendamentosGlobais.removeWhere((agendamento) => agendamento.id == id); // Remove também da lista global
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Agendamento excluído com sucesso!")),
-    );
+  Future<void> _cancelarAgendamento(String agendamentoId) async {
+    final String? erro = await _agendamentoServico.cancelarAgendamento(agendamentoId);
+    if (erro == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Agendamento cancelado com sucesso!")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao cancelar agendamento: $erro")),
+      );
+    }
   }
 
   @override
@@ -40,46 +36,88 @@ class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
         backgroundColor: Colors.pink[100],
         centerTitle: true,
       ),
-      body: _agendamentos.isEmpty
-          ? const Center(
+      body: StreamBuilder<List<Agendamento>>(
+        stream: _agendamentoServico.listarAgendamentos(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Erro ao carregar agendamentos: ${snapshot.error}'),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
               child: Text(
                 "Nenhum agendamento encontrado.",
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: _agendamentos.length,
-              itemBuilder: (context, index) {
-                final agendamento = _agendamentos[index];
-                return Card(
-                  elevation: 3,
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+            );
+          }
+
+          final agendamentos = snapshot.data!;
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: agendamentos.length,
+            itemBuilder: (context, index) {
+              final agendamento = agendamentos[index];
+              return Card(
+                elevation: 3,
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
                   ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    title: Text(
-                      agendamento.servico.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.pinkAccent,
+                  title: Text(
+                    agendamento.servicos.map((s) => s['nome']).join(', '),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.pinkAccent,
+                    ),
+                  ),
+                  subtitle: Text(
+                    "Data: ${agendamento.dataHora.day}/${agendamento.dataHora.month}/${agendamento.dataHora.year} - "
+                    "Hora: ${agendamento.dataHora.hour}:${agendamento.dataHora.minute.toString().padLeft(2, '0')}\n"
+                    "Profissional: ${agendamento.profissional}\n"
+                    "Status: ${agendamento.status}",
+                    style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditarAgendamentoPage(
+                                agendamento: agendamento,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                    subtitle: Text(
-                      "Data: ${agendamento.data.day}/${agendamento.data.month}/${agendamento.data.year} - Hora: ${agendamento.hora}",
-                      style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _excluirAgendamento(agendamento.id),
-                    ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _cancelarAgendamento(agendamento.id!),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

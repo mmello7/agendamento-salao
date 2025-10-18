@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_salaoapp/_comum/Minhas_cores.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
@@ -6,13 +7,15 @@ import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.da
 import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart'; // Importar a página de agendamentos do cliente
 
 class ServicoTela extends StatefulWidget {
-  const ServicoTela({Key? key}) : super(key: key);
+  final User user;
+  const ServicoTela({Key? key, required this.user}) : super(key: key);
 
   @override
   State<ServicoTela> createState() => _ServicoTelaState();
 }
 
 class _ServicoTelaState extends State<ServicoTela> {
+  final List<ServicoModel> _servicosSelecionados = [];
   final List<ServicoModel> servicos = [
     ServicoModel(
       id: '1',
@@ -22,7 +25,8 @@ class _ServicoTelaState extends State<ServicoTela> {
       avaliacao: '4.8',
       urlImage:
           'https://images.unsplash.com/photo-1595476108010-b49e8275ccf8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    ),
+      price: 50.0,
+     ),
     ServicoModel(
       id: '2',
       name: 'Corte de Cabelo Masculino',
@@ -31,7 +35,8 @@ class _ServicoTelaState extends State<ServicoTela> {
       avaliacao: '4.7',
       urlImage:
           'https://images.unsplash.com/photo-1621607509154-bf6285e7593e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    ),
+      price: 40.0,
+     ),
     ServicoModel(
       id: '3',
       name: 'Coloração Completa',
@@ -40,7 +45,8 @@ class _ServicoTelaState extends State<ServicoTela> {
       avaliacao: '4.9',
       urlImage:
           'https://images.unsplash.com/photo-1521602736140-192534641977?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    ),
+      price: 150.0,
+     ),
     ServicoModel(
       id: '4',
       name: 'Manicure e Pedicure',
@@ -49,7 +55,8 @@ class _ServicoTelaState extends State<ServicoTela> {
       avaliacao: '4.6',
       urlImage:
           'https://images.unsplash.com/photo-1583947041727-eb424885066c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    ),
+      price: 60.0,
+     ),
     ServicoModel(
       id: '5',
       name: 'Tratamento Capilar',
@@ -58,7 +65,8 @@ class _ServicoTelaState extends State<ServicoTela> {
       avaliacao: '4.9',
       urlImage:
           'https://images.unsplash.com/photo-1521590832167-9ee28dcdad93?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    ),
+      price: 100.0,
+     ),
   ];
 
   @override
@@ -76,6 +84,12 @@ class _ServicoTelaState extends State<ServicoTela> {
       drawer: Drawer(
         child: ListView(
           children: [
+            UserAccountsDrawerHeader(
+              accountName: Text((widget.user.displayName != null) 
+              ? widget.user.displayName! 
+              : ""),
+            accountEmail: Text(widget.user.email!),
+            ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: Text("Deslogar"),
@@ -150,29 +164,27 @@ class _ServicoTelaState extends State<ServicoTela> {
                         ),
                       ),
                       const Spacer(),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AgendamentoPage(servico: servico),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.calendar_today),
-                        label: const Text('Agendar'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent, // Cor do botão
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: _servicosSelecionados.contains(servico),
+                            onChanged: (bool? selected) {
+                              setState(() {
+                                if (selected != null && selected) {
+                                  _servicosSelecionados.add(servico);
+                                } else {
+                                  _servicosSelecionados.remove(servico);
+                                }
+                              });
+                            },
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
+                          const SizedBox(width: 10), // Espaçamento entre o checkbox e o texto
+                          const Text(
+                            'Selecionar',
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
@@ -182,19 +194,36 @@ class _ServicoTelaState extends State<ServicoTela> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AgendamentosClientePage(),
+      floatingActionButton: _servicosSelecionados.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AgendamentoPage(servicosSelecionados: _servicosSelecionados), // Passa a lista de serviços
+                  ),
+                );
+              },
+              backgroundColor: Colors.pinkAccent,
+              icon: const Icon(Icons.calendar_today, color: Colors.white),
+              label: const Text(
+                'Agendar Selecionados',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AgendamentosClientePage(),
+                  ),
+                );
+              },
+              backgroundColor: Colors.pinkAccent,
+              child: const Icon(Icons.list, color: Colors.white),
+              tooltip: 'Ver Meus Agendamentos',
             ),
-          );
-        },
-        backgroundColor: Colors.pinkAccent,
-        child: const Icon(Icons.list, color: Colors.white),
-        tooltip: 'Ver Meus Agendamentos',
-      ),
     );
   }
 }

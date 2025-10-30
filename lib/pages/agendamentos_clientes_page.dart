@@ -86,7 +86,6 @@ class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
                   subtitle: Text(
                     "Data: ${agendamento.dataHora.day}/${agendamento.dataHora.month}/${agendamento.dataHora.year} - "
                     "Hora: ${agendamento.dataHora.hour}:${agendamento.dataHora.minute.toString().padLeft(2, '0')}\n"
-                    "Profissional: ${agendamento.profissional}\n"
                     "Status: ${agendamento.status}",
                     style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                   ),

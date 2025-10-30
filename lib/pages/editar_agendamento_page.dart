@@ -20,7 +20,6 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
 
   late DateTime _selectedDate;
   late TimeOfDay _selectedTime;
-  late String _profissional;
   late String _status;
   late String _observacoes;
   late List<ServicoModel> _servicosSelecionados;
@@ -39,7 +38,6 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
     super.initState();
     _selectedDate = widget.agendamento.dataHora;
     _selectedTime = TimeOfDay.fromDateTime(widget.agendamento.dataHora);
-    _profissional = widget.agendamento.profissional;
     _status = widget.agendamento.status;
     _observacoes = widget.agendamento.observacoes ?? '';
     _servicosSelecionados = widget.agendamento.servicos.map((s) {
@@ -98,7 +96,6 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
         userName: widget.agendamento.userName,
         dataHora: novaDataHora,
         servicos: servicosData,
-        profissional: _profissional,
         status: _status,
         observacoes: _observacoes.isEmpty ? null : _observacoes,
         criadoEm: widget.agendamento.criadoEm,
@@ -170,18 +167,7 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
                 );
               }).toList(),
               const SizedBox(height: 20),
-              TextFormField(
-                initialValue: _profissional,
-                decoration: const InputDecoration(labelText: 'Profissional'),
-                onSaved: (value) => _profissional = value ?? '',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o nome do profissional';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
+
               DropdownButtonFormField<String>(
                 value: _status,
                 decoration: const InputDecoration(labelText: 'Status'),

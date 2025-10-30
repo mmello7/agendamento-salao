@@ -6,7 +6,6 @@ class Agendamento {
   final String userName;
   final DateTime dataHora;
   final List<Map<String, dynamic>> servicos;
-  final String profissional;
   final String status;
   final String? observacoes;
   final DateTime criadoEm;
@@ -17,7 +16,6 @@ class Agendamento {
     required this.userName,
     required this.dataHora,
     required this.servicos,
-    required this.profissional,
     required this.status,
     this.observacoes,
     required this.criadoEm,
@@ -30,7 +28,6 @@ class Agendamento {
       'userName': userName,
       'dataHora': Timestamp.fromDate(dataHora),
       'servicos': servicos,
-      'profissional': profissional,
       'status': status,
       'observacoes': observacoes,
       'criadoEm': Timestamp.fromDate(criadoEm),
@@ -50,7 +47,6 @@ class Agendamento {
       userName: data['userName'] as String,
       dataHora: (data['dataHora'] as Timestamp).toDate(),
       servicos: List<Map<String, dynamic>>.from(data['servicos'] as List),
-      profissional: data['profissional'] as String,
       status: data['status'] as String,
       observacoes: data['observacoes'] as String?,
       criadoEm: (data['criadoEm'] as Timestamp).toDate(),
@@ -65,7 +61,6 @@ class Agendamento {
       userName: map['userName'] as String,
       dataHora: (map['dataHora'] is Timestamp) ? (map['dataHora'] as Timestamp).toDate() : DateTime.parse(map['dataHora'] as String),
       servicos: List<Map<String, dynamic>>.from(map['servicos'] as List),
-      profissional: map['profissional'] as String,
       status: map['status'] as String,
       observacoes: map['observacoes'] as String?,
       criadoEm: (map['criadoEm'] is Timestamp) ? (map['criadoEm'] as Timestamp).toDate() : DateTime.parse(map['criadoEm'] as String),

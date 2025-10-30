@@ -85,7 +85,6 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
         userName: user.displayName ?? "Usuário", // Usa o nome do usuário ou "Usuário"
         dataHora: agendamentoDateTime,
         servicos: servicosData,
-        profissional: "A definir", // Pode ser selecionado em outra tela ou definido por padrão
         status: "pendente",
         criadoEm: DateTime.now(),
       );

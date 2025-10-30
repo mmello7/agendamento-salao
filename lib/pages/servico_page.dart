@@ -26,7 +26,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       urlImage:
           'https://images.unsplash.com/photo-1595476108010-b49e8275ccf8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       price: 50.0,
-     ),
+    ),
     ServicoModel(
       id: '2',
       name: 'Corte de Cabelo Masculino',
@@ -36,7 +36,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       urlImage:
           'https://images.unsplash.com/photo-1621607509154-bf6285e7593e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       price: 40.0,
-     ),
+    ),
     ServicoModel(
       id: '3',
       name: 'Coloração Completa',
@@ -46,7 +46,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       urlImage:
           'https://images.unsplash.com/photo-1521602736140-192534641977?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       price: 150.0,
-     ),
+    ),
     ServicoModel(
       id: '4',
       name: 'Manicure e Pedicure',
@@ -56,7 +56,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       urlImage:
           'https://images.unsplash.com/photo-1583947041727-eb424885066c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       price: 60.0,
-     ),
+    ),
     ServicoModel(
       id: '5',
       name: 'Tratamento Capilar',
@@ -66,7 +66,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       urlImage:
           'https://images.unsplash.com/photo-1521590832167-9ee28dcdad93?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       price: 100.0,
-     ),
+    ),
   ];
 
   @override
@@ -85,10 +85,12 @@ class _ServicoTelaState extends State<ServicoTela> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text((widget.user.displayName != null) 
-              ? widget.user.displayName! 
-              : ""),
-            accountEmail: Text(widget.user.email!),
+              accountName: Text(
+                (widget.user.displayName != null)
+                    ? widget.user.displayName!
+                    : "",
+              ),
+              accountEmail: Text(widget.user.email!),
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -105,94 +107,89 @@ class _ServicoTelaState extends State<ServicoTela> {
         itemCount: servicos.length,
         itemBuilder: (context, index) {
           final servico = servicos[index];
-          return Card(
-            elevation: 5,
-            margin: const EdgeInsets.symmetric(vertical: 10.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (servico.urlImage != null && servico.urlImage!.isNotEmpty)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.network(
-                        servico.urlImage!,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
+          return InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AgendamentoPage(
+                    servicosSelecionados: [
+                      servico,
+                    ], // passa apenas o serviço clicado
+                  ),
+                ),
+              );
+            },
+            child: Card(
+              elevation: 5,
+              margin: const EdgeInsets.symmetric(vertical: 10.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (servico.urlImage != null &&
+                        servico.urlImage!.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          servico.urlImage!,
                           height: 180,
-                          color: const Color.fromARGB(255, 224, 224, 224),
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 50,
-                              color: Colors.grey,
-                            ),
-                          ),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                height: 180,
+                                color: const Color.fromARGB(255, 224, 224, 224),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
                         ),
                       ),
+                    const SizedBox(height: 15),
+                    Text(
+                      servico.name,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pinkAccent,
+                      ),
                     ),
-                  const SizedBox(height: 15),
-                  Text(
-                    servico.name,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pinkAccent,
+                    const SizedBox(height: 8),
+                    Text(
+                      servico.descricao,
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    servico.descricao,
-                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber[400], size: 20),
-                      const SizedBox(width: 5),
-                      Text(
-                        servico.avaliacao,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber[400], size: 20),
+                        const SizedBox(width: 5),
+                        Text(
+                          servico.avaliacao,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Checkbox(
-                            value: _servicosSelecionados.contains(servico),
-                            onChanged: (bool? selected) {
-                              setState(() {
-                                if (selected != null && selected) {
-                                  _servicosSelecionados.add(servico);
-                                } else {
-                                  _servicosSelecionados.remove(servico);
-                                }
-                              });
-                            },
-                          ),
-                          const SizedBox(width: 10), // Espaçamento entre o checkbox e o texto
-                          const Text(
-                            'Selecionar',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                        const Spacer(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
-        },
+        }, 
       ),
       floatingActionButton: _servicosSelecionados.isNotEmpty
           ? FloatingActionButton.extended(
@@ -200,7 +197,9 @@ class _ServicoTelaState extends State<ServicoTela> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AgendamentoPage(servicosSelecionados: _servicosSelecionados), // Passa a lista de serviços
+                    builder: (context) => AgendamentoPage(
+                      servicosSelecionados: _servicosSelecionados,
+                    ), // Passa a lista de serviços
                   ),
                 );
               },

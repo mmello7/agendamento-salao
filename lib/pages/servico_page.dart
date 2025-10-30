@@ -23,8 +23,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Corte',
       descricao: 'Corte moderno e personalizado para realçar sua beleza.',
       avaliacao: '4.8',
-      urlImage:
-          'https://images.unsplash.com/photo-1595476108010-b49e8275ccf8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      urlImage: 'assets/images/corte-fem.jpg',
       price: 50.0,
     ),
     ServicoModel(
@@ -33,8 +32,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Corte',
       descricao: 'Estilo e precisão para o seu visual.',
       avaliacao: '4.7',
-      urlImage:
-          'https://images.unsplash.com/photo-1621607509154-bf6285e7593e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      urlImage: 'assets/images/corte-masc.jpg',
       price: 40.0,
     ),
     ServicoModel(
@@ -43,8 +41,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Coloração',
       descricao: 'Transforme seu cabelo com cores vibrantes e duradouras.',
       avaliacao: '4.9',
-      urlImage:
-          'https://images.unsplash.com/photo-1521602736140-192534641977?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      urlImage: 'assets/images/coloracao.jpg',
       price: 150.0,
     ),
     ServicoModel(
@@ -53,8 +50,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Unhas',
       descricao: 'Unhas impecáveis e bem cuidadas para todas as ocasiões.',
       avaliacao: '4.6',
-      urlImage:
-          'https://images.unsplash.com/photo-1583947041727-eb424885066c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      urlImage: 'assets/images/mao-pe.jpg',
       price: 60.0,
     ),
     ServicoModel(
@@ -63,8 +59,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Tratamento',
       descricao: 'Hidratação profunda e restauração para cabelos saudáveis.',
       avaliacao: '4.9',
-      urlImage:
-          'https://images.unsplash.com/photo-1521590832167-9ee28dcdad93?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      urlImage: 'assets/images/tratamento.jpg',
       price: 100.0,
     ),
   ];
@@ -136,25 +131,26 @@ class _ServicoTelaState extends State<ServicoTela> {
                         servico.urlImage!.isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          servico.urlImage!,
+                        child: Image.asset(
+                          'assets/images/${servico.urlImage}',
                           height: 180,
                           width: double.infinity,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
                                 height: 180,
-                                color: const Color.fromARGB(255, 224, 224, 224),
+                                color: Colors.grey[300],
                                 child: const Center(
                                   child: Icon(
-                                    Icons.broken_image,
-                                    size: 50,
-                                    color: Colors.grey,
+                                    Icons.error,
+                                    color: Colors.red,
+                                    size: 40,
                                   ),
                                 ),
                               ),
                         ),
                       ),
+
                     const SizedBox(height: 15),
                     Text(
                       servico.name,
@@ -189,7 +185,7 @@ class _ServicoTelaState extends State<ServicoTela> {
               ),
             ),
           );
-        }, 
+        },
       ),
       floatingActionButton: _servicosSelecionados.isNotEmpty
           ? FloatingActionButton.extended(

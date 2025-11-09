@@ -168,24 +168,6 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
               }).toList(),
               const SizedBox(height: 20),
 
-              DropdownButtonFormField<String>(
-                value: _status,
-                decoration: const InputDecoration(labelText: 'Status'),
-                items: <String>['pendente', 'confirmado', 'concluído', 'cancelado']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _status = newValue!;
-                  });
-                },
-                onSaved: (value) => _status = value ?? 'pendente',
-              ),
-              const SizedBox(height: 10),
               TextFormField(
                 initialValue: _observacoes,
                 decoration: const InputDecoration(labelText: 'Observações (Opcional)'),

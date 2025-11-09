@@ -39,151 +39,171 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formkey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Image.asset("assets/logo.png", height: 150),
-                  const Text(
-                    "Prism Hair",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: getAuthenticationInputDecoration("E-mail"),
-                    validator: (String? value) {
-                      if (value == null) {
-                        return "E-mail é obrigatório";
-                      }
-                      if (value.length < 5) {
-                        return "E-mail muito curto";
-                      }
-                      if (!value.contains("@")) {
-                        return "E-mail inválido";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _senhaController,
-                    decoration: getAuthenticationInputDecoration("Senha"),
-                    obscureText: true,
-                    validator: (String? value) {
-                      if (value == null) {
-                        return "Senha é obrigatória";
-                      }
-                      if (value.length < 5) {
-                        return "Senha muito curta";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  Visibility(
-                    visible: !queroEntrar,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: getAuthenticationInputDecoration(
-                            "Confirme a Senha",
+          ),SingleChildScrollView( // <--- CORREÇÃO AQUI
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formkey,
+                child: Column(
+                  // Usamos MainAxisAlignment.center e CrossAxisAlignment.stretch
+                  // para centralizar na horizontal e esticar os campos.
+                  // MainAxisAlignment.center pode ser um problema se o conteúdo
+                  // for muito pequeno, mas geralmente funciona bem.
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Para garantir que o topo da tela seja seguro (como sob a bateria/câmera)
+                    // e para empurrar o conteúdo para baixo.
+                    SizedBox(height: MediaQuery.of(context).padding.top + 32), 
+                    
+                    Image.asset("assets/logo.png", height: 150),
+                    const Text(
+                      "Prism Hair",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: getAuthenticationInputDecoration("E-mail"),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "E-mail é obrigatório";
+                        }
+                        if (value.length < 5) {
+                          return "E-mail muito curto";
+                        }
+                        if (!value.contains("@")) {
+                          return "E-mail inválido";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _senhaController,
+                      decoration: getAuthenticationInputDecoration("Senha"),
+                      obscureText: true,
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "Senha é obrigatória";
+                        }
+                        if (value.length < 5) {
+                          return "Senha muito curta";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    Visibility(
+                      visible: !queroEntrar,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            // É recomendado ter um Controller aqui para a confirmação de senha
+                            decoration: getAuthenticationInputDecoration(
+                              "Confirme a Senha",
+                            ),
+                            obscureText: true,
+                            validator: (String? value) {
+                              if (!queroEntrar && (value == null || value.isEmpty)) {
+                                return "A confirmação de Senha não pode ser vazia";
+                              }
+                              // Adicione validação para comparar com a senha original
+                              if (!queroEntrar && value != _senhaController.text) {
+                                return "As senhas não coincidem";
+                              }
+                              if (value != null && value.length < 5) {
+                                return "Senha muito curta";
+                              }
+                              return null;
+                            },
                           ),
-                          obscureText: true,
-                          validator: (String? value) {
-                            if (value == null) {
-                              return "A confirmação de Senha não pode ser vazia";
-                            }
-                            if (value.length < 5) {
-                              return "Senha muito curta";
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _nomeController,
-                          decoration: getAuthenticationInputDecoration("Nome"),
-                          validator: (String? value) {
-                            if (value == null) {
-                              return "Nome é obrigatório";
-                            }
-                            if (value.length < 5) {
-                              return "Nome muito curto";
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _nomeController,
+                            decoration: getAuthenticationInputDecoration("Nome"),
+                            validator: (String? value) {
+                              if (!queroEntrar && (value == null || value.isEmpty)) {
+                                return "Nome é obrigatório";
+                              }
+                              if (value != null && value.length < 5) {
+                                return "Nome muito curto";
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      botaoPrincipalClicado();
-                    },
-                    child: Text((queroEntrar) ? "Entrar" : "Cadastrar"),
-                  ),
-                  ElevatedButton.icon(
-  icon: Image.network(
-    'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/google.png',
-    height: 24,
-  ),
-  label: const Text(
-    'Entrar com Google',
-    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-  ),
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.white,
-    minimumSize: const Size(double.infinity, 50),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-      side: const BorderSide(color: Colors.grey),
-    ),
-  ),
-  onPressed: () async {
-    final userCredential = await AutenticacaoServico().loginComGoogle();
-    if (userCredential != null) {
-      Navigator.pushReplacementNamed(context, '/home');
-    }
-  },
-),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        botaoPrincipalClicado();
+                      },
+                      child: Text((queroEntrar) ? "Entrar" : "Cadastrar"),
+                    ),
+                    ElevatedButton.icon(
+                      icon: Image.network(
+                        'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/google.png',
+                        height: 24,
+                      ),
+                      label: const Text(
+                        'Entrar com Google',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 42),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          side: const BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final userCredential = await AutenticacaoServico()
+                            .loginComGoogle();
+                        if (userCredential != null) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        }
+                      },
+                    ),
 
-                  const Divider(),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        queroEntrar = !queroEntrar;
-                      });
-                    },
-                    child: Text(
-                      (queroEntrar)
-                          ? "Ainda não tenho conta, cadastrar!"
-                          : "Já tenho conta, entrar!",
+                    const Divider(),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          queroEntrar = !queroEntrar;
+                        });
+                      },
+                      child: Text(
+                        (queroEntrar)
+                            ? "Ainda não tenho conta, cadastrar!"
+                            : "Já tenho conta, entrar!",
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RedefinirSenhaPage(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Esqueceu a senha?',
-                      style: TextStyle(color: Colors.pinkAccent),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RedefinirSenhaPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Esqueceu a senha?',
+                        style: TextStyle(color: Colors.pinkAccent),
+                      ),
                     ),
-                  ),
-                  // Outros widgets da tela de autenticação viriam aqui
-                ],
+                    // Garantir que haja um espaço extra na parte inferior, se necessário
+                    const SizedBox(height: 32), 
+                  ],
+                ),
               ),
             ),
           ),

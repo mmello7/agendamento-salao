@@ -5,10 +5,11 @@ import 'package:flutter_application_salaoapp/pages/editar_agendamento_page.dart'
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AgendamentosClientePage extends StatefulWidget {
-  const AgendamentosClientePage({Key? key}) : super(key: key);
+  const AgendamentosClientePage({super.key});
 
   @override
-  State<AgendamentosClientePage> createState() => _AgendamentosClientePageState();
+  State<AgendamentosClientePage> createState() =>
+      _AgendamentosClientePageState();
 }
 
 class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
@@ -16,15 +17,22 @@ class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _cancelarAgendamento(String agendamentoId) async {
-    final String? erro = await _agendamentoServico.cancelarAgendamento(agendamentoId);
+    final String? erro = await _agendamentoServico.cancelarAgendamento(
+      agendamentoId,
+    );
     if (erro == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Agendamento cancelado com sucesso!")),
+        const SnackBar(
+          content: Text("Agendamento cancelado com sucesso!"),
+          backgroundColor: Colors.green,
+        ),
       );
-      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao cancelar agendamento: $erro")),
+        SnackBar(
+          content: Text("Erro ao cancelar agendamento: $erro"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -108,7 +116,33 @@ class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _cancelarAgendamento(agendamento.id!),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Confirmar exclusão'),
+                              content: const Text(
+                                'Tem certeza que deseja cancelar este agendamento?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Não'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _cancelarAgendamento(agendamento.id!);
+                                  },
+                                  child: const Text(
+                                    'Sim',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

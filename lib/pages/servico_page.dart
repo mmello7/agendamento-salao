@@ -23,7 +23,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Corte',
       descricao: 'Corte moderno e personalizado para realçar sua beleza.',
       avaliacao: '4.8',
-      urlImage: 'assets/images/corte-fem.jpg',
+      urlImage: 'corte-fem.jpg',
       price: 50.0,
     ),
     ServicoModel(
@@ -32,7 +32,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Corte',
       descricao: 'Estilo e precisão para o seu visual.',
       avaliacao: '4.7',
-      urlImage: 'assets/images/corte-masc.jpg',
+      urlImage: 'corte-masc.jpg',
       price: 40.0,
     ),
     ServicoModel(
@@ -41,7 +41,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Coloração',
       descricao: 'Transforme seu cabelo com cores vibrantes e duradouras.',
       avaliacao: '4.9',
-      urlImage: 'assets/images/coloracao.jpg',
+      urlImage: 'coloracao.jpg',
       price: 150.0,
     ),
     ServicoModel(
@@ -50,7 +50,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Unhas',
       descricao: 'Unhas impecáveis e bem cuidadas para todas as ocasiões.',
       avaliacao: '4.6',
-      urlImage: 'assets/images/mao-pe.jpg',
+      urlImage: 'mao-pe.jpg',
       price: 60.0,
     ),
     ServicoModel(
@@ -59,7 +59,7 @@ class _ServicoTelaState extends State<ServicoTela> {
       servico: 'Tratamento',
       descricao: 'Hidratação profunda e restauração para cabelos saudáveis.',
       avaliacao: '4.9',
-      urlImage: 'assets/images/tratamento.jpg',
+      urlImage: 'tratamento.jpg',
       price: 100.0,
     ),
   ];

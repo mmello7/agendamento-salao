@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
 
-        android:label="novo_salaoapp"
+        android:label="Prism Hair"
 
 
         android:name="${applicationName}"

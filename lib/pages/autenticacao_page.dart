@@ -3,6 +3,7 @@ import 'package:flutter_application_salaoapp/_comum/minhas_cores.dart';
 import 'package:flutter_application_salaoapp/_comum/snackbar.dart';
 import 'package:flutter_application_salaoapp/componentes/decoration_campo_autenticacao.dart';
 import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart';
+import 'package:flutter_application_salaoapp/pages/redefinir_page.dart';
 
 class AutenticacaoTela extends StatefulWidget {
   const AutenticacaoTela({super.key});
@@ -49,7 +50,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                 children: [
                   Image.asset("assets/logo.png", height: 150),
                   const Text(
-                    "Salon App",
+                    "Prism Hair",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                   ),
@@ -129,6 +130,31 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                     },
                     child: Text((queroEntrar) ? "Entrar" : "Cadastrar"),
                   ),
+                  ElevatedButton.icon(
+  icon: Image.network(
+    'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/google.png',
+    height: 24,
+  ),
+  label: const Text(
+    'Entrar com Google',
+    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.white,
+    minimumSize: const Size(double.infinity, 50),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+      side: const BorderSide(color: Colors.grey),
+    ),
+  ),
+  onPressed: () async {
+    final userCredential = await AutenticacaoServico().loginComGoogle();
+    if (userCredential != null) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  },
+),
+
                   const Divider(),
                   TextButton(
                     onPressed: () {
@@ -140,6 +166,20 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
                       (queroEntrar)
                           ? "Ainda não tenho conta, cadastrar!"
                           : "Já tenho conta, entrar!",
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RedefinirSenhaPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Esqueceu a senha?',
+                      style: TextStyle(color: Colors.pinkAccent),
                     ),
                   ),
                   // Outros widgets da tela de autenticação viriam aqui
@@ -160,13 +200,13 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
     if (_formkey.currentState!.validate()) {
       if (queroEntrar) {
         print("Entrada Válida");
-        _autenServico.logarUsuario(email: email, senha: senha).then(
-          (String? erro) {
+        _autenServico.logarUsuario(email: email, senha: senha).then((
+          String? erro,
+        ) {
           if (erro != null) {
             mostrarSnackBar(context: context, texto: erro);
-            }
-          },
-        );
+          }
+        });
       } else {
         print("Cadastro Válido");
         print(
@@ -177,7 +217,7 @@ class _AutenticacaoTelaState extends State<AutenticacaoTela> {
             .then((String? erro) {
               if (erro != null) {
                 mostrarSnackBar(context: context, texto: erro);
-              } 
+              }
             });
       }
     } else {

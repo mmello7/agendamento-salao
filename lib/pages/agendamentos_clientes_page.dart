@@ -21,6 +21,7 @@ class _AgendamentosClientePageState extends State<AgendamentosClientePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Agendamento cancelado com sucesso!")),
       );
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao cancelar agendamento: $erro")),

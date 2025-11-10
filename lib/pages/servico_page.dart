@@ -4,7 +4,7 @@ import 'package:flutter_application_salaoapp/_comum/Minhas_cores.dart';
 import 'package:flutter_application_salaoapp/models/servico_model.dart';
 import 'package:flutter_application_salaoapp/pages/agendamento_page.dart';
 import 'package:flutter_application_salaoapp/pages/agendamentos_clientes_page.dart';
-import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart'; // Importar a página de agendamentos do cliente
+import 'package:flutter_application_salaoapp/servicos/autenticacao_servico.dart';
 
 class ServicoTela extends StatefulWidget {
   final User user;
@@ -15,7 +15,9 @@ class ServicoTela extends StatefulWidget {
 }
 
 class _ServicoTelaState extends State<ServicoTela> {
-  final List<ServicoModel> _servicosSelecionados = [];
+  // Lista para rastrear os IDs dos serviços selecionados
+  final List<String> _servicosSelecionadosIds = []; 
+  
   final List<ServicoModel> servicos = [
     ServicoModel(
       id: '1',
@@ -63,13 +65,41 @@ class _ServicoTelaState extends State<ServicoTela> {
       price: 100.0,
     ),
   ];
+  
+  // Novo método para adicionar/remover o serviço
+  void _toggleServicoSelection(ServicoModel servico) {
+    setState(() {
+      if (_servicosSelecionadosIds.contains(servico.id)) {
+        _servicosSelecionadosIds.remove(servico.id);
+      } else {
+        _servicosSelecionadosIds.add(servico.id!);
+      }
+    });
+  }
+
+  // Novo método para calcular o preço total
+  double _calcularTotal() {
+    return servicos
+        .where((s) => _servicosSelecionadosIds.contains(s.id))
+        .fold(0.0, (total, current) => total + (current.price ?? 0.0));
+  }
+
+  // Novo método para obter a lista completa de objetos ServicoModel selecionados
+  List<ServicoModel> _getServicosSelecionados() {
+    return servicos
+        .where((s) => _servicosSelecionadosIds.contains(s.id))
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final totalSelecionado = _calcularTotal();
+    final quantidadeSelecionada = _servicosSelecionadosIds.length;
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nossos Serviços'),
-        backgroundColor: MinhasCores.rosaClaro, // Cor suave para salão
+        title: const Text('Nossos Serviços'),
+        backgroundColor: MinhasCores.rosaClaro,
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
@@ -80,16 +110,30 @@ class _ServicoTelaState extends State<ServicoTela> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
+              currentAccountPicture: const CircleAvatar(),
               accountName: Text(
                 (widget.user.displayName != null)
                     ? widget.user.displayName!
-                    : "",
+                    : "Cliente",
               ),
               accountEmail: Text(widget.user.email!),
             ),
             ListTile(
+              leading: const Icon(Icons.list_alt),
+              title: const Text("Meus Agendamentos"),
+              onTap: () {
+                Navigator.of(context).pop(); // Fecha o Drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AgendamentosClientePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.logout),
-              title: Text("Deslogar"),
+              title: const Text("Deslogar"),
               onTap: () {
                 AutenticacaoServico().deslogar();
               },
@@ -102,33 +146,27 @@ class _ServicoTelaState extends State<ServicoTela> {
         itemCount: servicos.length,
         itemBuilder: (context, index) {
           final servico = servicos[index];
+          final isSelected = _servicosSelecionadosIds.contains(servico.id);
+          
           return InkWell(
             borderRadius: BorderRadius.circular(15),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AgendamentoPage(
-                    servicosSelecionados: [
-                      servico,
-                    ], // passa apenas o serviço clicado
-                  ),
-                ),
-              );
-            },
+            // Ao invés de navegar, agora ele apenas seleciona/desseleciona
+            onTap: () => _toggleServicoSelection(servico),
             child: Card(
               elevation: 5,
               margin: const EdgeInsets.symmetric(vertical: 10.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
+              // Destaca o card se estiver selecionado
+              color: isSelected ? MinhasCores.rosaClaro.withOpacity(0.3) : Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (servico.urlImage != null &&
-                        servico.urlImage!.isNotEmpty)
+                    // Área da Imagem
+                    if (servico.urlImage != null && servico.urlImage!.isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
                         child: Image.asset(
@@ -142,7 +180,7 @@ class _ServicoTelaState extends State<ServicoTela> {
                                 color: Colors.grey[300],
                                 child: const Center(
                                   child: Icon(
-                                    Icons.error,
+                                    Icons.image_not_supported,
                                     color: Colors.red,
                                     size: 40,
                                   ),
@@ -150,24 +188,56 @@ class _ServicoTelaState extends State<ServicoTela> {
                               ),
                         ),
                       ),
-
                     const SizedBox(height: 15),
-                    Text(
-                      servico.name,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pinkAccent,
-                      ),
+                    
+                    // Nome e Preço
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            servico.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.pinkAccent,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        
+                        // Icone de Seleção
+                        Icon(
+                          isSelected ? Icons.check_circle : Icons.circle_outlined,
+                          color: isSelected ? Colors.green : Colors.grey,
+                          size: 30,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
+
+                    // Descrição
                     Text(
                       servico.descricao,
                       style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 10),
+
+                    // Preço e Avaliação
                     Row(
                       children: [
+                        Text(
+                          'R\$ ${(servico.price ?? 0.0).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const Spacer(),
                         Icon(Icons.star, color: Colors.amber[400], size: 20),
                         const SizedBox(width: 5),
                         Text(
@@ -177,7 +247,6 @@ class _ServicoTelaState extends State<ServicoTela> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Spacer(),
                       ],
                     ),
                   ],
@@ -187,23 +256,25 @@ class _ServicoTelaState extends State<ServicoTela> {
           );
         },
       ),
-      floatingActionButton: _servicosSelecionados.isNotEmpty
+      
+      // Floating Action Button agora é um carrinho que aparece ao selecionar algo
+      floatingActionButton: quantidadeSelecionada > 0
           ? FloatingActionButton.extended(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AgendamentoPage(
-                      servicosSelecionados: _servicosSelecionados,
-                    ), // Passa a lista de serviços
+                      servicosSelecionados: _getServicosSelecionados(), // Passa a lista completa
+                    ), 
                   ),
                 );
               },
               backgroundColor: Colors.pinkAccent,
               icon: const Icon(Icons.calendar_today, color: Colors.white),
-              label: const Text(
-                'Agendar Selecionados',
-                style: TextStyle(color: Colors.white),
+              label: Text(
+                'Agendar $quantidadeSelecionada Serviços (R\$ ${totalSelecionado.toStringAsFixed(2)})',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             )
           : FloatingActionButton(
@@ -219,6 +290,10 @@ class _ServicoTelaState extends State<ServicoTela> {
               child: const Icon(Icons.list, color: Colors.white),
               tooltip: 'Ver Meus Agendamentos',
             ),
+      // Adiciona um botão de Agendar (extended) ou de Ver Meus Agendamentos (simples)
+      floatingActionButtonLocation: quantidadeSelecionada > 0 
+          ? FloatingActionButtonLocation.centerFloat 
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 }

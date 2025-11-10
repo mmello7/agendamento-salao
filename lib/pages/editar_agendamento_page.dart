@@ -168,6 +168,7 @@ class _EditarAgendamentoPageState extends State<EditarAgendamentoPage> {
               }).toList(),
               const SizedBox(height: 20),
 
+              const SizedBox(height: 10),
               TextFormField(
                 initialValue: _observacoes,
                 decoration: const InputDecoration(labelText: 'Observações (Opcional)'),

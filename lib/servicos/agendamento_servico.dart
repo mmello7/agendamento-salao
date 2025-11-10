@@ -15,7 +15,7 @@ class AgendamentoServico {
     if (currentUser == null) {
       return Stream.value([]);
     }
-    
+
     // Query do Firestore: Busca apenas pelo userId e ordena pela data.
     return _firestore
         .collection("agendamentos")
@@ -23,15 +23,21 @@ class AgendamentoServico {
         .orderBy("dataHora", descending: true)
         .snapshots()
         .map((snapshot) {
-          
           // 1. Mapeia todos os documentos do Firestore para objetos Agendamento
           List<Agendamento> todosAgendamentos = snapshot.docs
-              .map((doc) => Agendamento.fromFirestore(doc as DocumentSnapshot<Map<String, dynamic>>, null))
+              .map(
+                (doc) => Agendamento.fromFirestore(
+                  doc as DocumentSnapshot<Map<String, dynamic>>,
+                  null,
+                ),
+              )
               .toList();
 
           // 2. FILTRO NO DART: Retorna apenas os agendamentos que NÃO estão 'cancelado'.
           // É isso que faz o item sumir da tela instantaneamente após o cancelamento.
-          return todosAgendamentos.where((agendamento) => agendamento.status != 'cancelado').toList();
+          return todosAgendamentos
+              .where((agendamento) => agendamento.status != 'cancelado')
+              .toList();
         });
   }
 
@@ -45,7 +51,7 @@ class AgendamentoServico {
       // Adiciona o campo 'status' como 'agendado' por padrão antes de salvar
       Map<String, dynamic> data = agendamento.toMap();
       data['status'] = 'agendado';
-      
+
       await _firestore.collection('agendamentos').add(data);
       return null; // Retorna null em caso de sucesso
     } on FirebaseException catch (e) {
@@ -65,12 +71,11 @@ class AgendamentoServico {
 
     try {
       // Atualiza o campo 'status' para "cancelado"
-      await _firestore
-      .collection("agendamentos")
-      .doc(agendamentoId)
-      .update({"status": "cancelado"});
+      await _firestore.collection("agendamentos").doc(agendamentoId).update({
+        "status": "cancelado",
+      });
       return null;
-      } on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       return e.message;
     }
   }
@@ -85,10 +90,41 @@ class AgendamentoServico {
     }
 
     try {
-      await _firestore.collection("agendamentos").doc(agendamento.id).update(agendamento.toMap());
+      await _firestore
+          .collection("agendamentos")
+          .doc(agendamento.id)
+          .update(agendamento.toMap());
       return null;
     } on FirebaseException catch (e) {
       return e.message;
     }
   }
+
+  Future<List<String>> getHorariosOcupados(DateTime dataSelecionada) async {
+    DateTime inicioDoDia = DateTime(
+      dataSelecionada.year,
+      dataSelecionada.month,
+      dataSelecionada.day,
+    );
+    DateTime fimDoDia = inicioDoDia.add(const Duration(hours: 24));
+
+    try {
+    QuerySnapshot snapshot = await _firestore
+        .collection("agendamentos")
+        .where("dataHora", isGreaterThanOrEqualTo: inicioDoDia)
+        .where("dataHora", isLessThan: fimDoDia)
+        .where("status", isNotEqualTo: "cancelado")
+        .get();
+
+    List<String> horariosOcupados = snapshot.docs.map((doc) {
+      DateTime dataHora = (doc['dataHora'] as Timestamp).toDate();
+      return '${dataHora.hour.toString().padLeft(2, '0')}:${dataHora.minute.toString().padLeft(2, '0')}';
+    }).toList();
+
+    return horariosOcupados;
+    } on FirebaseException catch (e) { // <-- Bloco CATCH
+      print("Erro ao buscar horários ocupados: ${e.message}");
+      return []; // Retorna lista vazia em caso de erro
+    }
+  } // <-- Chave de fechamento do método getHorariosOcupados
 }
